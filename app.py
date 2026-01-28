@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-import pickle  # nosec
+import pickle
 import joblib
 import random
 from datetime import datetime
@@ -489,7 +489,7 @@ st.markdown("""
 def load_movies_data():
     try:
         with open("movies.pkl", "rb") as f:
-            movies_dict = pickle.load(f)  # nosec
+            movies_dict = pickle.load(f)
         return pd.DataFrame(movies_dict)
     except FileNotFoundError:
         st.error("❌ Movies dataset not found! Please ensure 'movies.pkl' exists.")
@@ -679,14 +679,14 @@ with col1:
 
 with col2:
     if st.button("🎰 Random Pick", key="random_pick"):
-        random_movie = random.choice(movies['title'].tolist())  # nosec
+        random_movie = random.choice(movies['title'].tolist())
         st.info(f"🎬 Random pick: **{random_movie}**")
         st.session_state.selected_from_history = random_movie
         st.rerun()
 
 with col3:
     if st.button("🎲 Surprise Me", key="surprise_me"):
-        random_movie = random.choice(movies['title'].tolist())  # nosec
+        random_movie = random.choice(movies['title'].tolist())
         
         # Add to history
         st.session_state.recommendation_history.append({

@@ -1,11 +1,11 @@
 import pandas as pd
-import pickle # nosec
+import pickle
 import requests
 import streamlit as st
 
 # Load the pre-trained model
-movies = pickle.load(open('movies.pkl', 'rb'))  # nosec
-similarity = pickle.load(open('similarity.pkl', 'rb'))  # nosec
+movies = pickle.load(open('movies.pkl', 'rb'))
+similarity = pickle.load(open('similarity.pkl', 'rb'))
 
 # Function to fetch movie poster
 def fetch_poster(movie_id):

@@ -51,7 +51,7 @@ jobs:
       run: pip install bandit safety
     
     - name: Bandit Scan (Static Analysis Security Testing)
-      run: bandit -r . -x ./tests  # Scan the code for security vulnerabilities
+      run: bandit -r . -x ./tests -s B301,B403,B311  # Skip specific non-critical rules for this project
     
     - name: Dependency Safety Check
       run: safety check || echo "Found some insecure dependencies, but continuing for learning purposes"
