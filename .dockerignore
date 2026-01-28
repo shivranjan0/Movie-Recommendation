@@ -1,0 +1,18 @@
+.git
+.github
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.db
+.streamlit
+.vscode
+venv
+.env
+README.md
+Dockerfile
+.dockerignore
+# Do NOT ignore .pkl files since the app needs them to run!
+# similarity.pkl
+# movies.pkl
+# similarity_compressed.pkl

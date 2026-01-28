@@ -5,6 +5,7 @@ import joblib
 import random
 from datetime import datetime
 import time
+from logic import get_movie_recommendations
 
 # Page configuration
 st.set_page_config(
@@ -521,28 +522,9 @@ similarity = load_similarity_matrix()
 if movies.empty or similarity is None:
     st.stop()
 
-# Recommendation function
+# Recommendation function moved to logic.py
 def get_recommendations(movie_title, num_recommendations=5):
-    """Get movie recommendations with enhanced error handling"""
-    if movie_title not in movies['title'].values:
-        return [], "Movie not found in database!"
-    
-    try:
-        movie_index = movies[movies['title'] == movie_title].index[0]
-        distances = list(enumerate(similarity[movie_index]))
-        distances = sorted(distances, key=lambda x: x[1], reverse=True)
-        
-        recommended_movies = []
-        for i in distances[1:num_recommendations+1]:
-            movie_data = {
-                'title': movies.iloc[i[0]].title,
-                'similarity_score': round(i[1] * 100, 1)
-            }
-            recommended_movies.append(movie_data)
-        
-        return recommended_movies, None
-    except Exception as e:
-        return [], f"Error generating recommendations: {str(e)}"
+    return get_movie_recommendations(movie_title, movies, similarity, num_recommendations)
 
 # Netflix Header
 st.markdown("""

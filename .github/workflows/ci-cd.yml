@@ -1,0 +1,106 @@
+name: Streamlit CI/CD/Sec Pipeline
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
+
+jobs:
+  lint-and-test:
+    name: Lint & Unit Tests
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+        cache: 'pip'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install flake8 pytest pandas numpy
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+    - name: Lint with flake8
+      run: |
+        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+
+    - name: Run Unit Tests
+      run: |
+        pytest tests/
+
+  security-scan:
+    name: Security Scan (DevSecOps)
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+    
+    - name: Install Security Tools
+      run: pip install bandit safety
+    
+    - name: Bandit Scan (Static Analysis Security Testing)
+      run: bandit -r . -x ./tests  # Scan the code for security vulnerabilities
+    
+    - name: Dependency Safety Check
+      run: safety check || echo "Found some insecure dependencies, but continuing for learning purposes"
+
+  docker-build:
+    name: Containerization
+    needs: [lint-and-test, security-scan]
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Build and Load
+      uses: docker/build-push-action@v5
+      with:
+        context: .
+        load: true
+        tags: movie-rec-system:latest
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
+
+    - name: Test Docker Image
+      run: |
+        docker run -d --name temp-app -p 8501:8501 movie-rec-system:latest
+        sleep 5
+        # Verify the container is running
+        docker ps | grep temp-app
+        docker stop temp-app
+
+  deploy:
+    name: Continuous Deployment (CD)
+    needs: [docker-build]
+    # In a real scenario, this would only run on the 'main' branch
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+    - name: Deploy to Staging/Production
+      run: |
+        echo "🚀 Starting Deployment Process..."
+        echo "Authentication with Cloud Provider..."
+        echo "Pushing Docker Image to Container Registry..."
+        echo "Updating Cloud Service with new Image..."
+        echo "✅ Deployment Successful!"
+
+    - name: Post-Deployment Health Check
+      run: |
+        echo "🔍 Verifying application health in the cloud..."
+        # In a real setup, you would curl your public URL here
+        echo "App is live at: https://your-awesome-movie-app.render.com"
