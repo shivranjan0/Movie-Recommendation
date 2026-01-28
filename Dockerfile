@@ -4,12 +4,10 @@ FROM python:3.11-slim
 # Set the working directory in the container
 WORKDIR /app
 
-# Install system dependencies (if any)
-RUN apt-get update && apt-get install -y \
-    build-essential \
+# Install only essential system dependencies (curl is needed for healthcheck)
+# Simplified to prevent mirror errors (Apt Error 100)
+RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
-    software-properties-common \
-    git \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy the requirements file into the container
