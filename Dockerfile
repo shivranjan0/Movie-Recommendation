@@ -21,11 +21,11 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy the rest of the application code
 COPY . .
 
-# Expose the port Streamlit runs on
-EXPOSE 8501
+# Expose the port Streamlit runs on (10000 is Render default)
+EXPOSE 10000
 
 # Healthcheck to ensure the container is running correctly
-HEALTHCHECK --start-period=30s CMD curl --fail http://localhost:${PORT:-8501}/_stcore/health
+HEALTHCHECK --start-period=30s CMD curl --fail http://localhost:${PORT:-10000}/_stcore/health
 
 # Command to run the application
-ENTRYPOINT ["sh", "-c", "streamlit run app.py --server.port=${PORT:-8501} --server.address=0.0.0.0"]
+ENTRYPOINT ["sh", "-c", "streamlit run app.py --server.port=${PORT:-10000} --server.address=0.0.0.0"]
