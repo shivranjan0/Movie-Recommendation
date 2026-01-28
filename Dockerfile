@@ -25,7 +25,7 @@ COPY . .
 EXPOSE 8501
 
 # Healthcheck to ensure the container is running correctly
-HEALTHCHECK CMD curl --fail http://localhost:8501/_stcore/health
+HEALTHCHECK --start-period=30s CMD curl --fail http://localhost:${PORT:-8501}/_stcore/health
 
 # Command to run the application
 ENTRYPOINT ["sh", "-c", "streamlit run app.py --server.port=${PORT:-8501} --server.address=0.0.0.0"]
