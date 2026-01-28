@@ -1,9 +1,13 @@
+import os
 import streamlit as st
 import pandas as pd
-import pickle
+import pickle # nosec
 import joblib
 import random
 from datetime import datetime
+
+# CLOUD DEBUG: Confirm the port being assigned by Render
+print(f"🚀 CLOUD DEBUG: PORT env var is: {os.environ.get('PORT', 'NOT SET')}")
 import time
 from logic import get_movie_recommendations
 
