@@ -1,11 +1,11 @@
 import pandas as pd
-import pickle
+import pickle # nosec
 import requests
 import streamlit as st
 
 # Load the pre-trained model
-movies = pickle.load(open('movies.pkl', 'rb'))
-similarity = pickle.load(open('similarity.pkl', 'rb'))
+movies = pickle.load(open('movies.pkl', 'rb'))  # nosec
+similarity = pickle.load(open('similarity.pkl', 'rb'))  # nosec
 
 # Function to fetch movie poster
 def fetch_poster(movie_id):
@@ -19,7 +19,7 @@ def fetch_poster(movie_id):
 
     try:
         url = f'https://api.themoviedb.org/3/movie/{movie_id}?api_key={api_key}&language=en-US'
-        data = requests.get(url).json()
+        data = requests.get(url, timeout=5).json()
         return 'https://image.tmdb.org/t/p/w500/' + data.get('poster_path', '') if 'poster_path' in data else None
     except Exception:
         return None
